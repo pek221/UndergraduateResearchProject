@@ -5,45 +5,84 @@ from Parameters import Parameters
 class Person:
 
     # Initializes the person with thei condition, location, and moving variable
-    def __init__(self,i,x,y,S,I):
+    def __init__(self,i,x,y,S,I, house, store, friends):
         self.ID = i
         self.Susceptible = S
         self.Infective = [I,0]
         self.Recovered = False
         self.Dead = False
         self.location = (x, y)
-        self.quadrant = (self.location[0]%10, self.location[1]%10)
-        list = []
-        for i in range(30):
-            list.append(random.randint(10, 50))
-            list.append(random.randint(-50, -10))
-        self.moveX = random.choice(list)
-        self.moveY = random.choice(list)
         self.parameters = Parameters()
+        self.home = house
+        self.store = store
+        self.friends = friends
+        self.quadrant = (self.location[0]%10, self.location[1]%10)
+        self.movement = [self.location,(0,0)]
+        self.moveX, self.moveY = [0,0,0], [0,0,0] #[moving variable, amount of journey traveled, length of journey]
+        self.initializeMotion()
+
+    def initializeMotion(self):
+        self.movement[0] = self.location
+        if self.isHome():
+            store = int(100*self.parameters.probGoShopping)
+            stay = int(100*self.parameters.probStayHome)
+            friend = int(100*self.parameters.probVisitFriend)
+            list = store*['Store'] + stay*['Stay'] + friend*['Friend']
+            movement = random.choice(list)
+            if movement == 'Stay':
+                self.movement[1] = self.location
+                speed = random.choice([30, 40, 50, 60, 70, 80])
+                self.moveX = [0,0,speed]
+                self.moveY = [0,0,speed]
+                return
+            if movement == 'Store':
+                self.movement[1] = self.store.location
+                speed = random.choice([30, 40, 50, 60, 70, 80])
+                self.moveX = [(self.movement[1][0] - self.movement[0][0])/speed, 0, speed]
+                self.moveY = [(self.movement[1][1] - self.movement[0][1])/speed, 0, speed]
+                return
+            if movement == 'Friend':
+                friend = random.choice(self.friends)
+                self.movement[1] = friend.location
+                speed = random.choice([30, 40, 50, 60, 70, 80])
+                self.moveX = [(self.movement[1][0] - self.movement[0][0])/speed, 0, speed]
+                self.moveY = [(self.movement[1][1] - self.movement[0][1])/speed, 0, speed]
+                return
+        else:
+            self.movement[1] = self.home.location
+            speed = random.choice([30, 40, 50, 60, 70, 80])
+            self.moveX = [(self.movement[1][0] - self.movement[0][0])/speed, 0, speed]
+            self.moveY = [(self.movement[1][1] - self.movement[0][1])/speed, 0, speed]
+            return
+
+    def isHome(self):
+        if (self.location[0]-100 <= self.home.location[0] <= self.location[0]+100) and (self.location[1]-100 <= self.home.location[1] <= self.location[1]+100):
+            return True
+        else:
+            return False
 
     # Moves the person according to their random moving variable and ensures that people stay within the town boundaries
     def move(self,size):
         xmax, ymax, xmin, ymin = size[0], size[1], 10, 10
-        x, y = self.location[0], self.location[1]
-        if x <= xmin:
-            self.moveX = random.randint(10,50)
-        elif x >= xmax:
-            self.moveX = random.randint(-50,-10)
-        if y <= ymin:
-            self.moveY = random.randint(10,50)
-        elif y >= ymax:
-            self.moveY = random.randint(-50,-10)
-        self.location = (x+self.moveX, y+self.moveY)
-        self.quadrant = (self.location[0]%10, self.location[1]%10)
+        #if self.moveX[1]>=self.moveX[2] or self.moveY[1]>=self.moveY[2]:
+        #    self.initializeMotion()
+        if (self.location[0]-100 <= self.movement[1][0] <= self.location[0]+100) and (self.location[1]-100 <= self.movement[1][1] <= self.location[1]+100):
+            self.initializeMotion()
+        else:
+            x, y = self.location[0], self.location[1]
+            self.location = (x+self.moveX[0], y+self.moveY[0])
+            self.quadrant = (self.location[0]%10, self.location[1]%10)
+            self.moveX[1] += 1
+            self.moveY[1] += 1
         if self.Infective[0]:
             self.check_recovery()
 
     # Increments the invective person's recovery by 1 hr until 2 weeks is reached, and the person becomes either recovered or dead
     def check_recovery(self):
-        if self.Infective[1] < 730:
+        if self.Infective[1] < self.parameters.recoveryTime:
             self.Infective[1] += 1
             return
-        if self.Infective[1] >= 336:
+        if self.Infective[1] >= self.parameters.recoveryTime:
             self.Infective = [False,0]
             dead = int(self.parameters.deathRate*100)
             recovered = 100 - dead

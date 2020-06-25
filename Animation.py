@@ -16,6 +16,7 @@ class Animation:
     def update_animation(self,town,t):
         self.screen.fill((0,0,0))
         Animation.drawTime(self,t)
+        Animation.drawBuildings(self,town)
         Animation.drawPeople(self,town)
         pygame.display.flip()
 
@@ -26,6 +27,17 @@ class Animation:
         textrect.centerx = 450
         textrect.centery = 30
         self.screen.blit(text,textrect)
+
+    def drawBuildings(self, town):
+        for b in town.buildings:
+            if b.type == 'House':
+                rect = pygame.Rect(0, 0, 10, 10)
+                rect.center = (b.location[0] / 100, b.location[1] / 100)
+                pygame.draw.rect(self.screen, (255,255,255), rect)
+            elif b.type == 'Store':
+                rect = pygame.Rect(0, 0, 15, 15)
+                rect.center = (b.location[0] / 100, b.location[1] / 100)
+                pygame.draw.rect(self.screen, (138, 43, 226), rect)
 
     # For each person in the population, draws a small dot of the color corresponding to the condition of the given person and their location
     def drawPeople(self,town):
