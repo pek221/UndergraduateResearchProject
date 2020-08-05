@@ -16,10 +16,10 @@ class Town:
 
     def initializeBuildingsAndPopulation(self):
         # Initialize Buildings
-        step = self.townSize[0]/11
-        for x in range(step,10*step,step):
-            for y in range(step,10*step,step):
-                self.buildings.append(Building('House',(x,y),[0,random.randint(1,6)]))
+        step = self.townSize[0]/15
+        for x in range(step,14*step,step):
+            for y in range(step,14*step,step):
+                self.buildings.append(Building('House',(x,y),[0,random.randint(2,6)]))
         mid = len(self.buildings)/2
         self.buildings[mid].type = 'Store'
         self.buildings[mid].capacity = [0,0]
@@ -74,7 +74,7 @@ class Town:
                 recovered += 1
             elif p.Dead:
                 dead += 1
-        self.data['Time'].append(int(t/24))
+        self.data['Time'].append(t)
         self.data['Susceptible'].append(susceptible)
         self.data['Infective'].append(infective)
         self.data['Recovered'].append(recovered)

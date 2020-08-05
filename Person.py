@@ -31,26 +31,26 @@ class Person:
             movement = random.choice(list)
             if movement == 'Stay':
                 self.movement[1] = self.location
-                speed = random.choice([30, 40, 50, 60, 70, 80])
+                speed = random.choice([20, 30, 40, 50, 60, 70, 80])
                 self.moveX = [0,0,speed]
                 self.moveY = [0,0,speed]
                 return
             if movement == 'Store':
                 self.movement[1] = self.store.location
-                speed = random.choice([30, 40, 50, 60, 70, 80])
+                speed = random.choice([20,30, 40, 50, 60, 70, 80])
                 self.moveX = [(self.movement[1][0] - self.movement[0][0])/speed, 0, speed]
                 self.moveY = [(self.movement[1][1] - self.movement[0][1])/speed, 0, speed]
                 return
             if movement == 'Friend':
                 friend = random.choice(self.friends)
                 self.movement[1] = friend.location
-                speed = random.choice([30, 40, 50, 60, 70, 80])
+                speed = random.choice([20, 30, 40, 50, 60, 70, 80])
                 self.moveX = [(self.movement[1][0] - self.movement[0][0])/speed, 0, speed]
                 self.moveY = [(self.movement[1][1] - self.movement[0][1])/speed, 0, speed]
                 return
         else:
             self.movement[1] = self.home.location
-            speed = random.choice([30, 40, 50, 60, 70, 80])
+            speed = random.choice([20, 30, 40, 50, 60, 70, 80])
             self.moveX = [(self.movement[1][0] - self.movement[0][0])/speed, 0, speed]
             self.moveY = [(self.movement[1][1] - self.movement[0][1])/speed, 0, speed]
             return
@@ -64,8 +64,6 @@ class Person:
     # Moves the person according to their random moving variable and ensures that people stay within the town boundaries
     def move(self,size):
         xmax, ymax, xmin, ymin = size[0], size[1], 10, 10
-        #if self.moveX[1]>=self.moveX[2] or self.moveY[1]>=self.moveY[2]:
-        #    self.initializeMotion()
         if (self.location[0]-100 <= self.movement[1][0] <= self.location[0]+100) and (self.location[1]-100 <= self.movement[1][1] <= self.location[1]+100):
             self.initializeMotion()
         else:

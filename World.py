@@ -8,7 +8,7 @@ import  matplotlib.pyplot as plt
 class World:
 
     def __init__(self):
-        self.townSize = (50000,50000)
+        self.townSize = (100000,100000)
         self.parameters = Parameters()
         self.clock = pygame.time.Clock()
 
@@ -17,8 +17,8 @@ class World:
 
         # Create animation and population for Bethlehem, Allentown, etc.
         bethlehemAnimation = Animation((self.townSize[0]/100,self.townSize[1]/100))
-        bethlehem = Town(300,self.townSize,self.parameters)
-        allentownAnimation = Animation((self.townSize[0]/100,self.townSize[1]/100))
+        bethlehem = Town(600,self.townSize,self.parameters)
+        #allentownAnimation = Animation((self.townSize[0]/100,self.townSize[1]/100))
         #allentown = Town(300,self.townSize,self.parameters)
 
         # Print Initial Conditions of Each Population
@@ -65,12 +65,14 @@ class World:
         plt.plot('Time', 'Infective', data=bethlehemdf, color='r', linewidth=2)
         plt.plot('Time', 'Recovered', data=bethlehemdf, color='b', linewidth=2)
         plt.plot('Time', 'Dead', data=bethlehemdf, color='k', linewidth=2)
+        plt.xlabel("Time (hours)")
         plt.legend()
+
 
         #bethlehemdf.plot.line()
         plt.show()
 
-
-        #with pd.ExcelWriter(r'C:\Users\Pierr\Desktop\PyCharm\UndergradResearchProject\data\export_dataframe2.0.xlsx') as writer:
+        ###### Saves the Data to a new excel file #####
+        #with pd.ExcelWriter(r'C:\Users\Pierr\Desktop\PyCharm\UndergradResearchProject\data\export_dataframe7_22_2.xlsx') as writer:
         #    bethlehemdf.to_excel(writer, sheet_name='Bethlehem', index=False, header=True)
             #allentowndf.to_excel(writer, sheet_name='Allentown')
